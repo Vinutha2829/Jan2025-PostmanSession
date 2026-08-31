@@ -18,13 +18,13 @@ pipeline {
             parallel {
                 stage('Pull GoRest Image') {
                     steps {
-                        bat 'docker pull Vinutha2829/HiringQAInterntest:1.0'
+                        bat 'docker pull Vinutha2829/hiringqa:1.0'
                     }
                 }
                 
                 stage('Pull Booking Image') {
                     steps {
-                        bat 'docker pull Vinutha2829/HiringQAInterntest:1.0'
+                        bat 'docker pull Vinutha2829/hiringqa:1.0'
                     }
                 }
             }
@@ -40,13 +40,13 @@ pipeline {
             parallel {
                 stage('Run GoRest Tests') {
                     steps {
-                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/HiringQAInterntest:1.0'
+                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/hiringqa:1.0'
                     }
                 }
                 
                 stage('Run Booking Tests') {
                     steps {
-                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/HiringQAInterntest:1.0'
+                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/hiringqa:1.0'
                     }
                 }
             }
