@@ -1,0 +1,292 @@
+{
+  "info": {
+    "_postman_id": "20b3bb95-5823-486e-a3fb-9ae93372ff07",
+    "name": "Hiring QA Intern API Documentation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40340690"
+  },
+  "item": [
+    {
+      "name": "1-create a user",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const reqbody=pm.request.body.raw;\r",
+              "function namerandom()\r",
+              "{\r",
+              "    return Math.random().toString(36).substring(3);\r",
+              "}\r",
+              "const emailid=\"auto\"+namerandom()+\"@gmail.com\";\r",
+              "const jsbody=JSON.parse(reqbody);\r",
+              "jsbody.email=emailid;\r",
+              "pm.request.body.raw=jsbody;\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const reqbody=pm.request.body.raw;\r",
+              "const resbody=pm.response.json();\r",
+              "console.log(\"request email=\",reqbody.email);\r",
+              "console.log(\"response email=\",resbody.email);\r",
+              "pm.test(\"checking the email\",function()\r",
+              "{\r",
+              "    pm.expect(reqbody.email).to.eql(resbody.email);\r",
+              "})\r",
+              "const id=resbody.id;\r",
+              "pm.variables.set(\"single_id\",id);\r",
+              "console.log(\"single-id=\",id);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"age\": 30\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://qa-testing-eight.vercel.app/users",
+          "protocol": "https",
+          "host": [
+            "qa-testing-eight",
+            "vercel",
+            "app"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2-Get a single User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://qa-testing-eight.vercel.app/users/{{single_id}}",
+          "protocol": "https",
+          "host": [
+            "qa-testing-eight",
+            "vercel",
+            "app"
+          ],
+          "path": [
+            "users",
+            "{{single_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3-Get all the users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const resbody=pm.response.json();\r",
+              "const ids=resbody.map(e=>e.id);\r",
+              "console.log(\"ids=\",ids);\r",
+              "pm.variables.set(\"id_s\",ids);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://qa-testing-eight.vercel.app/users",
+          "protocol": "https",
+          "host": [
+            "qa-testing-eight",
+            "vercel",
+            "app"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4-call a post call and get user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const resbody=pm.response.json();\r",
+              "console.log(\"ids=\",resbody.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "function email()\r",
+              "{\r",
+              "    return Math.random().toString(36).substring(3);\r",
+              "}\r",
+              "\r",
+              "pm.sendRequest(\r",
+              "    {\r",
+              "        url:\"https://qa-testing-eight.vercel.app/users\",\r",
+              "        method:\"POST\",\r",
+              "        header:\r",
+              "        {\r",
+              "            \"Content-Type\":\"application/json\"\r",
+              "        },\r",
+              "        body:\r",
+              "        {\r",
+              "            mode:\"raw\",\r",
+              "            raw:JSON.stringify(\r",
+              "           {\r",
+              "            \"name\": \"vinutha\",\r",
+              "            \"email\":\"auto\"+email()+\"@gmail.com\",\r",
+              "            \"age\": 30\r",
+              "            })\r",
+              "        }\r",
+              "\r",
+              "    },function(error,result)\r",
+              "    {\r",
+              "        if(error)\r",
+              "        {\r",
+              "            console.log(error);\r",
+              "        }\r",
+              "        else\r",
+              "        {\r",
+              "    const jsbody=JSON.parse(result.text());\r",
+              "    const id=jsbody.id;\r",
+              "\r",
+              "    pm.variables.set(\"ids\",id);\r",
+              "        }\r",
+              "    })\r",
+              "\r",
+              "  "
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://qa-testing-eight.vercel.app/users/{{ids}}",
+          "protocol": "https",
+          "host": [
+            "qa-testing-eight",
+            "vercel",
+            "app"
+          ],
+          "path": [
+            "users",
+            "{{ids}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5-update the all user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const req=pm.request.body.raw;\r",
+              "function email()\r",
+              "{\r",
+              "   return  Math.random().toString(36).substring(3);\r",
+              "}\r",
+              "const js=JSON.parse(req);\r",
+              "const emailid=\"auto\"+email()+\"@gmail.com\";\r",
+              "js.email=emailid;\r",
+              "pm.request.body.raw=js;\r",
+              "\r",
+              "const ids=pm.variables.get(\"id_s\");\r",
+              "const id=ids.shift();\r",
+              "pm.variables.set(\"single_id\",id);\r",
+              "if(Array.isArray(ids)&& ids.length>0)\r",
+              "{\r",
+              "    pm.execution.setNextRequest(\"5-update the all user\");\r",
+              "}\r",
+              "else\r",
+              "{\r",
+              "    pm.execution.setNextRequest(null);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Selenium\",\r\n  \"age\": 30\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://qa-testing-eight.vercel.app/users/{{single_id}}\n",
+          "protocol": "https",
+          "host": [
+            "qa-testing-eight",
+            "vercel",
+            "app"
+          ],
+          "path": [
+            "users",
+            "{{single_id}}\n"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
