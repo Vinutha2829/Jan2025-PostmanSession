@@ -1,0 +1,182 @@
+{
+  "info": {
+    "_postman_id": "c99aac24-6ad0-45eb-a416-5490c65d92cd",
+    "name": "restful-booker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40340690"
+  },
+  "item": [
+    {
+      "name": "1-CreateToken",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\" : \"{{username}}\",\n    \"password\" : \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{restful-booker-url}}/auth",
+          "host": [
+            "{{restful-booker-url}}"
+          ],
+          "path": [
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2-Get_booking_byID",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({\r",
+              "    method:'POST',\r",
+              "    url:pm.environment.get(\"restful-booker-url\")+'/booking',\r",
+              "    header:{\r",
+              "        'Content-Type':'application/json'\r",
+              "    },\r",
+              "    body:{\r",
+              "        mode:'raw',\r",
+              "        raw:JSON.stringify({\r",
+              "             \"firstname\" : \"rocky\",\r",
+              "             \"lastname\" : \"bai\",\r",
+              "             \"totalprice\" : 111,\r",
+              "             \"depositpaid\" : true,\r",
+              "             \"bookingdates\" : {\r",
+              "             \"checkin\" : \"2018-01-01\",\r",
+              "             \"checkout\" : \"2019-01-01\"\r",
+              "    },\r",
+              "             \"additionalneeds\" : \"lunch\"\r",
+              "        })\r",
+              "    }\r",
+              "    \r",
+              "},function(error,response)\r",
+              "{\r",
+              "    if(error)\r",
+              "    {\r",
+              "        console.log(\"Here we go error\"+error);\r",
+              "    }\r",
+              "    else\r",
+              "    {\r",
+              "        const responseBody=JSON.parse(response.text());\r",
+              "        const id=responseBody.bookingid;\r",
+              "        console.log(\"booking id is=\"+id);\r",
+              "        pm.variables.set(\"booking_id\",id);\r",
+              "    }\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{restful-booker-url}}/booking/{{booking_id}}",
+          "host": [
+            "{{restful-booker-url}}"
+          ],
+          "path": [
+            "booking",
+            "{{booking_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3-update a booking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({\r",
+              "    method:'POST',\r",
+              "    url:pm.environment.get(\"restful-booker-url\")+'/auth',\r",
+              "    header:{\r",
+              "        'Content-Type':'application/json'\r",
+              "    },\r",
+              "    body:{\r",
+              "        mode:'raw',\r",
+              "        raw:JSON.stringify({\r",
+              "             \"username\" : \"pm.environment.get(username)\",\r",
+              "             \"password\" : \"pm.environment.get(password)\"\r",
+              "        })\r",
+              "    }\r",
+              "},function(error,response){\r",
+              "    if(error)\r",
+              "    {\r",
+              "        console.log(error);\r",
+              "    }\r",
+              "    else{\r",
+              "          const token=response.json().token;\r",
+              "          console.log(token);\r",
+              "          pm.variables.set(\"restful-booker-token\",token);\r",
+              "    }\r",
+              "\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{restful-booker-token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\" : \"rocky\",\n    \"lastname\" : \"bai\",\n    \"totalprice\" : 300,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{restful-booker-url}}/{{booking_id}}",
+          "host": [
+            "{{restful-booker-url}}"
+          ],
+          "path": [
+            "{{booking_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
