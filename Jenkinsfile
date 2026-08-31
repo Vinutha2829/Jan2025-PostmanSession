@@ -16,19 +16,19 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Vinutha2829/Jan2025-PostmanSession'
+                git url: 'https://github.com/vinutha2829/Jan2025-PostmanSession'
             }
         }
 
         stage('Pull Docker Image') {
             steps {
-                bat 'docker pull Vinutha2829/hiringqa:1.0'
+                bat 'docker pull vinutha2829/hiringqa:1.0'
             }
         }
 
         stage('Run API Test Cases') {
             steps {
-                bat 'docker run -v $(pwd)/newman:/app/results Vinutha2829/hiringqa:1.0'
+                bat 'docker run -v $(pwd)/newman:/app/results vinutha2829/hiringqa:1.0'
             }
         }
 
