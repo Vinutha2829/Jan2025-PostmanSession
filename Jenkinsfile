@@ -1,90 +1,52 @@
 pipeline {
     agent any
-    
     stages {
+
         stage('Build') {
             steps {
                 echo "Building the war"
             }
         }
 
-        stage('Deploy to QA') {
+        stage("Deploy to QA") {
             steps {
                 echo "Deploying to QA"
             }
         }
 
-        stage('Pull Docker Images') {
-            parallel {
-                stage('Pull GoRest Image') {
-                    steps {
-                        bat 'docker pull Vinutha2829/hiringqa:1.0'
-                    }
-                }
-                
-                stage('Pull Booking Image') {
-                    steps {
-                        bat 'docker pull Vinutha2829/hiringqa:1.0'
-                    }
-                }
-            }
-        }
-
-        stage('Prepare Newman Results Directory') {
+        stage('Checkout') {
             steps {
-                bat 'mkdir "newman"'
+                git url: 'https://github.com/Vinutha2829/Jan2025-PostmanSession'
             }
         }
 
-        stage('Run API Test Cases in Parallel') {
-            parallel {
-                stage('Run GoRest Tests') {
-                    steps {
-                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/hiringqa:1.0'
-                    }
-                }
-                
-                stage('Run Booking Tests') {
-                    steps {
-                        bat 'docker run --rm -v %cd%\\newman:/app/results Vinutha2829/hiringqa:1.0'
-                    }
-                }
+        stage('Pull Docker Image') {
+            steps {
+                bat 'docker pull Vinutha2829/hiringqa:1.0'
             }
         }
 
-        stage('Publish HTML Extra Reports') {
-            parallel {
-                stage('Publish GoRest Report') {
-                    steps {
-                        publishHTML([
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: 'newman',
-                            reportFiles: 'gorest.html',
-                            reportName: 'GoRest API Report',
-                            reportTitles: ''
-                        ])
-                    }
-                }
-                
-                stage('Publish Booking Report') {
-                    steps {
-                        publishHTML([
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: 'newman',
-                            reportFiles: 'booking.html',
-                            reportName: 'Booking API Report',
-                            reportTitles: ''
-                        ])
-                    }
-                }
+        stage('Run API Test Cases') {
+            steps {
+                bat 'docker run -v $(pwd)/newman:/app/results Vinutha2829/hiringqa:1.0'
             }
         }
 
-        stage('Deploy to PROD') {
+        stage('Publish HTML Extra Report') {
+            steps {
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'newman',
+                    reportFiles: 'gorest.html',
+                    reportName: 'HTML Extra API Report',
+                    reportTitles: ''
+                ])
+            }
+        }
+
+        stage("Deploy to PROD") {
             steps {
                 echo "Deploying to PROD"
             }
