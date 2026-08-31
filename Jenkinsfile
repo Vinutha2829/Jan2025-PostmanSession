@@ -16,7 +16,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/vinutha2829/Jan2025-PostmanSession'
+                git url: 'https://github.com/Vinutha2829/Jan2025-PostmanSession'
             }
         }
 
