@@ -22,13 +22,13 @@ pipeline {
 
         stage('Pull Docker Image') {
             steps {
-                bat 'docker pull vinutha2829/hiringqa:1.0'
+                bat 'docker pull vinumadhan/hiringqa:1.0'
             }
         }
 
         stage('Run API Test Cases') {
             steps {
-                bat 'docker run -v $(pwd)/newman:/app/results vinutha2829/hiringqa:1.0'
+                bat 'docker run -v $(pwd)/newman:/app/results vinumadhan/hiringqa:1.0'
             }
         }
 
