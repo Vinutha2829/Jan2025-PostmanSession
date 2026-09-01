@@ -1,0 +1,154 @@
+{
+  "info": {
+    "_postman_id": "e028e91b-c9f6-4aba-9a2d-803b75b9b0dc",
+    "name": "Go-rest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40340690"
+  },
+  "item": [
+    {
+      "name": "1-Get all uers",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const resBody=pm.response.json();\r",
+              "const ids=resBody.filter(e=>e.gender==\"female\").map(e=>e.id);\r",
+              "pm.collectionVariables.set(\"userIds\",ids);\r",
+              "console.log(ids);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://gorest.in/public/v2/users",
+          "protocol": "https",
+          "host": [
+            "gorest",
+            "in"
+          ],
+          "path": [
+            "public",
+            "v2",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const ids=pm.collectionVariables.get(\"userIds\");\r",
+              "pm.collectionVariables.set(\"Ids\",ids);\r",
+              "const id=ids.shift();\r",
+              "pm.variables.set(\"userId\",id);\r",
+              "pm.collectionVariables.set(\"userIds\",ids);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer 22fad4a1ba2c5c2b89e7c97f63af834416909e291ab5e1bd1c415c7f1db22911",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"status\": \"active\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://gorest.in/public/v2/users/{{userId}}",
+          "protocol": "https",
+          "host": [
+            "gorest",
+            "in"
+          ],
+          "path": [
+            "public",
+            "v2",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3.GET user status",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const ids=pm.collectionVariables.get(\"Ids\");\r",
+              "const id=ids.shift();\r",
+              "pm.variables.set(\"singleid\",id);\r",
+              "pm.collectionVariables.set(\"Ids\",ids);\r",
+              "\r",
+              "if(ids.length>0 && Array.isArray(ids))\r",
+              "{\r",
+              " pm.execution.setNextRequest(\"3.GET user status\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://gorest.in/public/v2/users/{{singleid}}",
+          "protocol": "https",
+          "host": [
+            "gorest",
+            "in"
+          ],
+          "path": [
+            "public",
+            "v2",
+            "users",
+            "{{singleid}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "userIds",
+      "value": ""
+    },
+    {
+      "key": "Ids",
+      "value": ""
+    }
+  ]
+}
