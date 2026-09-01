@@ -1,5 +1,7 @@
+```groovy
 pipeline {
     agent any
+
     stages {
 
         stage('Build') {
@@ -8,7 +10,7 @@ pipeline {
             }
         }
 
-        stage("Deploy to QA") {
+        stage('Deploy to QA') {
             steps {
                 echo "Deploying to QA"
             }
@@ -28,7 +30,14 @@ pipeline {
 
         stage('Run API Test Cases') {
             steps {
-                bat 'docker run -v "%WORKSPACE%\\newman:/app/results" vinumadhan/gorestapi:1.0'
+                bat 'docker run -v "%WORKSPACE%\\newman:/app" vinumadhan/gorestapi:1.0'
+            }
+        }
+
+        stage('Check Newman Reports') {
+            steps {
+                bat 'echo ===== Newman Report Files ====='
+                bat 'dir "%WORKSPACE%\\newman"'
             }
         }
 
@@ -39,17 +48,18 @@ pipeline {
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
                     reportDir: 'newman',
-                    reportFiles: 'gorest.html',
+                    reportFiles: '*.html',
                     reportName: 'HTML Extra API Report',
                     reportTitles: ''
                 ])
             }
         }
 
-        stage("Deploy to PROD") {
+        stage('Deploy to PROD') {
             steps {
                 echo "Deploying to PROD"
             }
         }
     }
 }
+```
